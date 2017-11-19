@@ -1,0 +1,17 @@
+version: '2'
+services:
+    web:
+        build: .
+        environment:
+            - ALLOW_OVERRIDE=true
+        ports:
+            - "80:80"
+        links:
+            - db
+    db:
+        image: mariadb
+        restart: always
+        volumes:
+            - ./mysql:/var/lib/mysql
+        environment:
+            MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
