@@ -5,8 +5,12 @@ RUN apt-get update && apt-get -y install unzip
 RUN docker-php-ext-install mysqli
 
 # download and unzip current CourtSpot
-RUN curl -O 'https://www.courtspot.de/Downloads/CourtSpot.zip' -o /var/www/html/CourtSpot.zip
+RUN curl 'https://www.courtspot.de/Downloads/CourtSpot.zip' -o /var/www/html/CourtSpot.zip
 RUN unzip /var/www/html/CourtSpot.zip -d  /var/www/html/
+
+# Update bup
+RUN curl -s https://aufschlagwechsel.de/bup/div/bupdate.txt -o /var/www/html/CourtSpot/Update-Verzeichnis/bupdate.php
+RUN php /var/www/html/CourtSpot/Update-Verzeichnis/bupdate.php
 
 # change document root to unzipped CourtSpot folder
 ENV APACHE_DOCUMENT_ROOT /var/www/html/CourtSpot
