@@ -8,6 +8,8 @@ services:
             - "80:80"
         links:
             - db
+        # volumes:
+        #     - ./code:/var/www/html
     db:
         image: mariadb
         restart: always
