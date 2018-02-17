@@ -31,6 +31,10 @@ RUN sed -ri -e '0,/cursor: none;/ s/cursor: none;/cursor: none; background: blac
 RUN sed -ri -e '0,/cursor: none;/ s/cursor: none;/cursor: none; background: black;/' /var/www/html/CourtSpot/Update-Verzeichnis/css/8_hauptanzeige169.php
 RUN sed -ri -e '0,/cursor: none;/ s/cursor: none;/cursor: none; background: black;/' /var/www/html/CourtSpot/Update-Verzeichnis/css/hauptanzeige.php
 RUN sed -ri -e '0,/cursor: none;/ s/cursor: none;/cursor: none; background: black;/' /var/www/html/CourtSpot/Update-Verzeichnis/css/hauptanzeige169.php
+# disable google translate
+RUN sed -ir -e 's/<\/head>/<meta name="google" value="notranslate">\n<\/head>/g' /var/www/html/CourtSpot/Update-Verzeichnis/html/Monitor_Court.php
+RUN sed -ir -e 's/<\/head>/<meta name="google" value="notranslate">\n<\/head>/g' /var/www/html/CourtSpot/Update-Verzeichnis/html/Monitor_1.php
+RUN sed -ir -e 's/<\/head>/<meta name="google" value="notranslate">\n<\/head>/g' /var/www/html/CourtSpot/Update-Verzeichnis/html/Monitor_2.php
 
 # open port
 EXPOSE 80
