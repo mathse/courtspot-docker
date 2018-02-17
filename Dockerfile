@@ -23,6 +23,7 @@ RUN sed -i -e 's/127\.0\.0\.1/db/g' /var/www/html/CourtSpot/DB_connection.php
 # make some files and folders writeable
 RUN chmod a+w /var/www/html/CourtSpot/DB_connection.php
 RUN chmod -R a+w /var/www/html/CourtSpot/Update-Verzeichnis
+RUN chmod a+w /var/www/html/CourtSpot/Optionen.php
 
 # open port
 EXPOSE 80
