@@ -25,6 +25,13 @@ RUN chmod a+w /var/www/html/CourtSpot/DB_connection.php
 RUN chmod -R a+w /var/www/html/CourtSpot/Update-Verzeichnis
 RUN chmod a+w /var/www/html/CourtSpot/Optionen.php
 
+## courtspot tweaks
+# add black background color on main view
+RUN sed -ri -e '0,/cursor: none;/ s/cursor: none;/cursor: none; background: black;/' /var/www/html/CourtSpot/Update-Verzeichnis/css/8_hauptanzeige.php
+RUN sed -ri -e '0,/cursor: none;/ s/cursor: none;/cursor: none; background: black;/' /var/www/html/CourtSpot/Update-Verzeichnis/css/8_hauptanzeige169.php
+RUN sed -ri -e '0,/cursor: none;/ s/cursor: none;/cursor: none; background: black;/' /var/www/html/CourtSpot/Update-Verzeichnis/css/hauptanzeige.php
+RUN sed -ri -e '0,/cursor: none;/ s/cursor: none;/cursor: none; background: black;/' /var/www/html/CourtSpot/Update-Verzeichnis/css/hauptanzeige169.php
+
 # open port
 EXPOSE 80
 
