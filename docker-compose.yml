@@ -6,6 +6,8 @@ services:
             - ALLOW_OVERRIDE=true
         ports:
             - "80:80"
+        dns:
+            - 8.8.8.8
         links:
             - db
         # volumes:
