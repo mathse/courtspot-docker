@@ -4,6 +4,9 @@ FROM php:7-apache
 RUN apt-get update && apt-get -y install unzip
 RUN docker-php-ext-install mysqli
 
+# Enable mod_headers, primarily to avoid caching bup appcache files
+RUN a2enmod headers
+
 # download and unzip current CourtSpot
 RUN curl 'https://www.courtspot.de/Downloads/CourtSpot.zip' -o /var/www/html/CourtSpot.zip
 RUN unzip /var/www/html/CourtSpot.zip -d  /var/www/html/
