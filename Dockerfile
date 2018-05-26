@@ -20,7 +20,7 @@ ENV APACHE_DOCUMENT_ROOT /var/www/html/CourtSpot
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
-# change database host to docker-dp-hostname
+# change database host to docker-db-hostname
 RUN sed -i -e 's/127\.0\.0\.1/db/g' /var/www/html/CourtSpot/DB_connection.php
 
 # make some files and folders writeable
