@@ -4,6 +4,9 @@ FROM php:7-apache
 RUN apt-get update && apt-get -y install unzip
 RUN docker-php-ext-install mysqli
 
+# Enable mod_headers, primarily to avoid caching bup appcache files
+RUN a2enmod headers
+
 # download and unzip current CourtSpot
 RUN curl 'https://courtspot.de/Downloads/CourtSpot.zip' -o /var/www/html/CourtSpot.zip
 RUN unzip /var/www/html/CourtSpot.zip -d  /var/www/html/
@@ -17,7 +20,7 @@ ENV APACHE_DOCUMENT_ROOT /var/www/html/CourtSpot
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
-# change database host to docker-dp-hostname
+# change database host to docker-db-hostname
 RUN sed -i -e 's/127\.0\.0\.1/db/g' /var/www/html/CourtSpot/DB_connection.php
 
 # make some files and folders writeable
@@ -35,6 +38,10 @@ RUN sed -ri -e '0,/cursor: none;/ s/cursor: none;/cursor: none; background: blac
 RUN sed -ir -e 's/<\/head>/<meta name="google" value="notranslate">\n<\/head>/g' /var/www/html/CourtSpot/Update-Verzeichnis/html/Monitor_Court.php
 RUN sed -ir -e 's/<\/head>/<meta name="google" value="notranslate">\n<\/head>/g' /var/www/html/CourtSpot/Update-Verzeichnis/html/Monitor_1.php
 RUN sed -ir -e 's/<\/head>/<meta name="google" value="notranslate">\n<\/head>/g' /var/www/html/CourtSpot/Update-Verzeichnis/html/Monitor_2.php
+RUN sed -ir -e 's/<\/head>/<meta name="google" value="notranslate">\n<\/head>/g' /var/www/html/CourtSpot/Update-Verzeichnis/html/8_Tabelle_1.php
+RUN sed -ir -e 's/<\/head>/<meta name="google" value="notranslate">\n<\/head>/g' /var/www/html/CourtSpot/Update-Verzeichnis/html/8_Tabelle_2.php
+RUN sed -ir -e 's/<\/head>/<meta name="google" value="notranslate">\n<\/head>/g' /var/www/html/CourtSpot/Update-Verzeichnis/html/Tabelle_1.php
+RUN sed -ir -e 's/<\/head>/<meta name="google" value="notranslate">\n<\/head>/g' /var/www/html/CourtSpot/Update-Verzeichnis/html/Tabelle_2.php
 
 # open port
 EXPOSE 80
