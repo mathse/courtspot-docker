@@ -5,7 +5,7 @@ RUN apt-get update && apt-get -y install unzip
 RUN docker-php-ext-install mysqli
 
 # download and unzip current CourtSpot
-RUN curl 'https://www.courtspot.de/Downloads/CourtSpot.zip' -o /var/www/html/CourtSpot.zip
+RUN curl 'https://courtspot.de/Downloads/CourtSpot.zip' -o /var/www/html/CourtSpot.zip
 RUN unzip /var/www/html/CourtSpot.zip -d  /var/www/html/
 
 # Update bup
