@@ -43,6 +43,9 @@ RUN sed -ir -e 's/<\/head>/<meta name="google" value="notranslate">\n<\/head>/g'
 RUN sed -ir -e 's/<\/head>/<meta name="google" value="notranslate">\n<\/head>/g' /var/www/html/CourtSpot/Update-Verzeichnis/html/Tabelle_1.php
 RUN sed -ir -e 's/<\/head>/<meta name="google" value="notranslate">\n<\/head>/g' /var/www/html/CourtSpot/Update-Verzeichnis/html/Tabelle_2.php
 
+# ignore curl_close warnings
+RUN echo 'php_value error_reporting 22527' > /var/www/html/CourtSpot/.htaccess
+
 # open port
 EXPOSE 80
 
