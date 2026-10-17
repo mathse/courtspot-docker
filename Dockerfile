@@ -1,4 +1,4 @@
-FROM php:7-apache
+FROM php:8-apache
 
 # install unzip and php's mysqli
 RUN apt-get update && apt-get -y install unzip
