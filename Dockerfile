@@ -17,12 +17,16 @@ RUN a2enmod rewrite \
 # Anwendung kopieren
 COPY . /var/www/html/
 
-# PHP-8-Kompatibilität des Updaters korrigieren
-RUN sed -i \
+# PHP-Kompatibilität korrigieren
+RUN set -eux; \
+    file=/var/www/html/CourtSpot/Update-Verzeichnis/bupdate.php; \
+    test -f "$file"; \
+    sed -i \
       -e 's/= tmp_dir \./= $tmp_dir ./g' \
       -e 's/curl_strerror($errno)/curl_strerror($curl_errno)/g' \
-      -e '/\\curl_close($ch);/d' \
-      /var/www/html/CourtSpot/Update-Verzeichnis/bupdate.php
+      -e '/curl_close($ch);/d' \
+      "$file"; \
+    php -l "$file"
 
 # Anwendung beim Build aktualisieren
 RUN php -d display_errors=1 \
