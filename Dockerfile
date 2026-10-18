@@ -18,9 +18,12 @@ RUN a2enmod rewrite \
 COPY . /var/www/html/
 
 # PHP-Kompatibilität korrigieren
-RUN set -eux; \
+RUN set -ux; \
     file=/var/www/html/CourtSpot/Update-Verzeichnis/bupdate.php; \
-    test -f "$file"; \
+    if [ ! -f "$file" ]; then \
+        echo "ERROR: Datei nicht gefunden: $file"; \
+        exit 1; \
+    fi; \
     sed -i \
       -e 's/= tmp_dir \./= $tmp_dir ./g' \
       -e 's/curl_strerror($errno)/curl_strerror($curl_errno)/g' \
