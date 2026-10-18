@@ -1,19 +1,21 @@
-FROM php:8-apache
+FROM php:8.5-apache
 
-# install unzip and php's mysqli
-RUN apt-get update && apt-get -y install unzip
-RUN docker-php-ext-install mysqli
+# PHP-Erweiterungen
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        libzip-dev \
+        unzip \
+        curl \
+    && docker-php-ext-install mysqli pdo_mysql zip \
+    && rm -rf /var/lib/apt/lists/*
 
-# Enable mod_headers, primarily to avoid caching bup appcache files
-RUN a2enmod headers
+# Apache .htaccess aktivieren
+RUN a2enmod rewrite \
+    && sed -i 's/AllowOverride None/AllowOverride All/g' \
+       /etc/apache2/apache2.conf
 
-# download and unzip current CourtSpot
-RUN curl 'https://courtspot.de/Downloads/CourtSpot.zip' -o /var/www/html/CourtSpot.zip
-RUN unzip /var/www/html/CourtSpot.zip -d  /var/www/html/
-
-# Update bup
-#RUN curl -s https://aufschlagwechsel.de/bup/div/bupdate.txt -o /var/www/html/CourtSpot/Update-Verzeichnis/bupdate.php
-#RUN php -d display_errors=1 -d display_startup_errors=1 -d error_reporting=-1 /var/www/html/CourtSpot/Update-Verzeichnis/bupdate.php
+# Anwendung kopieren
+COPY . /var/www/html/
 
 # PHP-8-Kompatibilität des Updaters korrigieren
 RUN sed -i \
@@ -27,39 +29,7 @@ RUN php -d display_errors=1 \
         -d error_reporting=22527 \
         /var/www/html/CourtSpot/Update-Verzeichnis/bupdate.php
 
-# change document root to unzipped CourtSpot folder
-ENV APACHE_DOCUMENT_ROOT /var/www/html/CourtSpot
-RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
-RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+# Berechtigungen
+RUN chown -R www-data:www-data /var/www/html
 
-# change database host to docker-db-hostname
-RUN sed -i -e 's/127\.0\.0\.1/db/g' /var/www/html/CourtSpot/DB_connection.php
-
-# make some files and folders writeable
-RUN chmod a+w /var/www/html/CourtSpot/DB_connection.php
-RUN chmod -R a+w /var/www/html/CourtSpot/Update-Verzeichnis
-RUN chmod a+w /var/www/html/CourtSpot/Optionen.php
-
-## courtspot tweaks
-# add black background color on main view
-RUN sed -ri -e '0,/cursor: none;/ s/cursor: none;/cursor: none; background: black;/' /var/www/html/CourtSpot/Update-Verzeichnis/css/8_hauptanzeige.php
-RUN sed -ri -e '0,/cursor: none;/ s/cursor: none;/cursor: none; background: black;/' /var/www/html/CourtSpot/Update-Verzeichnis/css/8_hauptanzeige169.php
-RUN sed -ri -e '0,/cursor: none;/ s/cursor: none;/cursor: none; background: black;/' /var/www/html/CourtSpot/Update-Verzeichnis/css/hauptanzeige.php
-RUN sed -ri -e '0,/cursor: none;/ s/cursor: none;/cursor: none; background: black;/' /var/www/html/CourtSpot/Update-Verzeichnis/css/hauptanzeige169.php
-# disable google translate
-RUN sed -ir -e 's/<\/head>/<meta name="google" value="notranslate">\n<\/head>/g' /var/www/html/CourtSpot/Update-Verzeichnis/html/Monitor_Court.php
-RUN sed -ir -e 's/<\/head>/<meta name="google" value="notranslate">\n<\/head>/g' /var/www/html/CourtSpot/Update-Verzeichnis/html/Monitor_1.php
-RUN sed -ir -e 's/<\/head>/<meta name="google" value="notranslate">\n<\/head>/g' /var/www/html/CourtSpot/Update-Verzeichnis/html/Monitor_2.php
-RUN sed -ir -e 's/<\/head>/<meta name="google" value="notranslate">\n<\/head>/g' /var/www/html/CourtSpot/Update-Verzeichnis/html/8_Tabelle_1.php
-RUN sed -ir -e 's/<\/head>/<meta name="google" value="notranslate">\n<\/head>/g' /var/www/html/CourtSpot/Update-Verzeichnis/html/8_Tabelle_2.php
-RUN sed -ir -e 's/<\/head>/<meta name="google" value="notranslate">\n<\/head>/g' /var/www/html/CourtSpot/Update-Verzeichnis/html/Tabelle_1.php
-RUN sed -ir -e 's/<\/head>/<meta name="google" value="notranslate">\n<\/head>/g' /var/www/html/CourtSpot/Update-Verzeichnis/html/Tabelle_2.php
-
-# ignore curl_close warnings
-RUN echo 'php_value error_reporting 22527' > /var/www/html/CourtSpot/.htaccess
-
-# open port
 EXPOSE 80
-
-# run apache
-CMD /usr/sbin/apache2ctl -D FOREGROUND
