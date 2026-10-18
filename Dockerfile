@@ -13,7 +13,7 @@ RUN unzip /var/www/html/CourtSpot.zip -d  /var/www/html/
 
 # Update bup
 RUN curl -s https://aufschlagwechsel.de/bup/div/bupdate.txt -o /var/www/html/CourtSpot/Update-Verzeichnis/bupdate.php
-RUN php -d display_errors=1 -d display_startup_errors=1 -d error_reporting=-1 /var/www/html/CourtSpot/Update-Verzeichnis/bupdate.php
+#RUN php -d display_errors=1 -d display_startup_errors=1 -d error_reporting=-1 /var/www/html/CourtSpot/Update-Verzeichnis/bupdate.php
 
 # change document root to unzipped CourtSpot folder
 ENV APACHE_DOCUMENT_ROOT /var/www/html/CourtSpot
