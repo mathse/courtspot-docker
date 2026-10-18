@@ -15,6 +15,6 @@ services:
         image: mariadb
         restart: always
         volumes:
-            - ./mysql:/var/lib/mysql
+            - mysql:/var/lib/mysql
         environment:
             MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
